@@ -11,6 +11,24 @@ pipeline {
     }
 
     stages {
+        stage('Install Docker CLI') {
+            steps {
+                echo '🛠️ Checking and installing Docker CLI...'
+                sh '''
+                    if ! command -v docker &> /dev/null; then
+                        echo "Docker CLI not found. Attempting install..."
+                        apt-get update && apt-get install -y docker.io || sudo apt-get update && sudo apt-get install -y docker.io || {
+                            echo "Debian package install failed, downloading static docker binary..."
+                            curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-26.1.4.tgz -o /tmp/docker.tgz
+                            tar -xzf /tmp/docker.tgz -C /tmp
+                            mv /tmp/docker/docker /usr/local/bin/docker || sudo mv /tmp/docker/docker /usr/local/bin/docker
+                        }
+                    fi
+                    docker --version
+                '''
+            }
+        }
+
         stage('Authenticate Docker Hub') {
             steps {
                 echo '🔑 Logging in to Docker Hub...'
@@ -93,7 +111,7 @@ pipeline {
         always {
             echo '🧹 Cleaning up workspace credentials and session...'
             sh 'rm -f .env'
-            sh 'docker logout'
+            sh 'if command -v docker &> /dev/null; then docker logout; fi'
         }
     }
 }
