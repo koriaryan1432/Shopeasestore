@@ -1,7 +1,7 @@
 @Library('jenkins-shared-library@main') _
 
 pipeline {
-    agent { label 'jenkins-agent' }
+    agent { label 'aws-linux-docker' }
 
     environment {
         BUILD_TAG = "${env.BUILD_NUMBER}"
