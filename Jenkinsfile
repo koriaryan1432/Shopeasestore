@@ -12,11 +12,16 @@ pipeline {
     }
 
     stages {
-        stage('Setup Docker CLI') {
+        stage('Setup Docker CLI & Compose') {
             steps {
-                echo '🛠️ Configuring permissions for local Docker CLI...'
+                echo '🛠️ Configuring local Docker CLI and Compose plugin...'
                 sh 'chmod +x bin/docker'
+                sh 'chmod +x bin/docker-compose'
+                sh 'mkdir -p ~/.docker/cli-plugins'
+                sh 'cp bin/docker-compose ~/.docker/cli-plugins/docker-compose'
+                sh 'chmod +x ~/.docker/cli-plugins/docker-compose'
                 sh 'docker --version'
+                sh 'docker compose version'
             }
         }
 
