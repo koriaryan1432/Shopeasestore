@@ -8,6 +8,7 @@ pipeline {
         BACKEND_IMAGE  = "koriaryan/shopease-backend"
         FRONTEND_IMAGE = "koriaryan/shopease-frontend"
         REGISTRY_CREDS = "dockerhub-credentials"
+        PATH = "${env.WORKSPACE}/bin:${env.PATH}"
     }
 
     stages {
@@ -16,13 +17,36 @@ pipeline {
                 echo '🛠️ Checking and installing Docker CLI...'
                 sh '''
                     if ! command -v docker &> /dev/null; then
-                        echo "Docker CLI not found. Attempting install..."
-                        apt-get update && apt-get install -y docker.io || sudo apt-get update && sudo apt-get install -y docker.io || {
-                            echo "Debian package install failed, downloading static docker binary..."
-                            curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-26.1.4.tgz -o /tmp/docker.tgz
+                        echo "Docker CLI not found in PATH."
+                        mkdir -p "${WORKSPACE}/bin"
+                        if [ -f "${WORKSPACE}/bin/docker" ]; then
+                            echo "Docker CLI already exists in workspace bin."
+                        else
+                            echo "Attempting to download static Docker CLI..."
+                            DOWNLOAD_URL="https://download.docker.com/linux/static/stable/x86_64/docker-26.1.4.tgz"
+                            
+                            if command -v curl &> /dev/null; then
+                                curl -fsSL "$DOWNLOAD_URL" -o /tmp/docker.tgz
+                            elif command -v wget &> /dev/null; then
+                                wget -qO /tmp/docker.tgz "$DOWNLOAD_URL"
+                            elif command -v python3 &> /dev/null; then
+                                python3 -c "import urllib.request; urllib.request.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
+                            elif command -v python &> /dev/null; then
+                                python -c "import urllib; urllib.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
+                            elif command -v perl &> /dev/null; then
+                                perl -e "use File::Fetch; my \\$ff = File::Fetch->new(uri => '$DOWNLOAD_URL'); \\$ff->fetch(to => '/tmp');"
+                                mv /tmp/docker-26.1.4.tgz /tmp/docker.tgz
+                            else
+                                echo "No downloader tool found (curl, wget, python, perl). Failing."
+                                exit 1
+                            fi
+                            
+                            echo "Extracting docker CLI..."
                             tar -xzf /tmp/docker.tgz -C /tmp
-                            mv /tmp/docker/docker /usr/local/bin/docker || sudo mv /tmp/docker/docker /usr/local/bin/docker
-                        }
+                            mv /tmp/docker/docker "${WORKSPACE}/bin/docker"
+                            chmod +x "${WORKSPACE}/bin/docker"
+                            rm -rf /tmp/docker.tgz /tmp/docker
+                        fi
                     fi
                     docker --version
                 '''
