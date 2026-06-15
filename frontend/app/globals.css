@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Floema Core Color Variables */
+  --color-black: #000;
+  --color-white: #fff;
+  --color-red: #ff004d;
+  --color-creme: #f4efd7;
+  --color-flourYellow: #e9e778;
+  
+  --color-brightIvory25: #f9f8f6;
+  --color-brightIvory50: #f2efea;
+  --color-brightIvory100: #ebe7df;
+  --color-brightIvory200: #e4ded3;
+  --color-brightIvory300: #d2cdc4;
+  --color-brightIvory400: #beb9b0;
+  
+  --color-stoneBrown100: #e2dede;
+  --color-stoneBrown300: #c3bcbb;
+  --color-stoneBrown500: #988f8b;
+  --color-stoneBrown600: #7a716d;
+  --color-stoneBrown700: #524945;
+  --color-stoneBrown800: #241f21;
+  
+  --color-forestGreen600: #042d2b;
+  --color-natureKraft: #c6af88;
+  --color-urbanCoral: #f76c46;
+  --color-golfCeladon: #bacfa3;
+  --color-replasticVistaBlue: #85a1c5;
+
+  /* Theme mappings matching Floema website */
+  --color-bg: var(--color-brightIvory50);
+  --color-surface: var(--color-brightIvory25);
+  --color-surface-hover: var(--color-brightIvory100);
+  --color-text: var(--color-stoneBrown800);
+  --color-muted: var(--color-stoneBrown600);
+  --color-primary: var(--color-forestGreen600);
+  --color-accent: var(--color-urbanCoral);
+  --color-border: rgba(36, 31, 33, 0.12);
+  --color-danger: var(--color-red);
+  --color-success: var(--color-forestGreen600);
+  
+  --radius: 4px; /* Hard, clean borders */
+  --shadow: 0 4px 30px rgba(36, 31, 33, 0.03);
+  --glass-blur: blur(12px);
+  --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary));
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Perfect Selection styling */
+::-moz-selection {
+  background: var(--color-black) !important;
+  color: var(--color-white) !important;
+  -webkit-text-fill-color: var(--color-white) !important;
+}
+::selection {
+  background: var(--color-black) !important;
+  color: var(--color-white) !important;
+  -webkit-text-fill-color: var(--color-white) !important;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.1em;
+}
+
+h1 {
+  font-size: clamp(48px, 40px + 2vw, 84px);
+}
+
+h2 {
+  font-size: clamp(32px, 28px + 1.5vw, 56px);
+}
+
+h3 {
+  font-size: clamp(24px, 20px + 1vw, 38px);
+}
+
+h4 {
+  font-size: clamp(18px, 16px + 0.5vw, 24px);
+}
+
+/* Custom scrollbar matching forestGreen and ivory theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brightIvory25);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-forestGreen600);
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-urbanCoral);
+}
+
+/* Custom selection styling */
+::selection {
+  background: var(--color-forestGreen600) !important;
+  color: var(--color-creme) !important;
+}
+
+.font-editorial-italic {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
+.editorial-border {
+  border-color: rgba(4, 45, 43, 0.1);
+}
+
+/* Tactile Matte Paper Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.035;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom cursor default pointer disable */
+@media (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+
