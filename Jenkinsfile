@@ -12,44 +12,11 @@ pipeline {
     }
 
     stages {
-        stage('Install Docker CLI') {
+        stage('Setup Docker CLI') {
             steps {
-                echo '🛠️ Checking and installing Docker CLI...'
-                sh '''
-                    if ! command -v docker > /dev/null 2>&1; then
-                        echo "Docker CLI not found in PATH."
-                        mkdir -p "${WORKSPACE}/bin"
-                        if [ -f "${WORKSPACE}/bin/docker" ]; then
-                            echo "Docker CLI already exists in workspace bin."
-                        else
-                            echo "Attempting to download static Docker CLI..."
-                            DOWNLOAD_URL="https://download.docker.com/linux/static/stable/x86_64/docker-26.1.4.tgz"
-                            
-                            if command -v curl > /dev/null 2>&1; then
-                                curl -fsSL "$DOWNLOAD_URL" -o /tmp/docker.tgz
-                            elif command -v wget > /dev/null 2>&1; then
-                                wget -qO /tmp/docker.tgz "$DOWNLOAD_URL"
-                            elif command -v python3 > /dev/null 2>&1; then
-                                python3 -c "import urllib.request; urllib.request.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
-                            elif command -v python > /dev/null 2>&1; then
-                                python -c "import urllib; urllib.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
-                            elif command -v perl > /dev/null 2>&1; then
-                                export DOWNLOAD_URL
-                                perl -MHTTP::Tiny -e 'my $response = HTTP::Tiny->new->mirror($ENV{DOWNLOAD_URL}, "/tmp/docker.tgz"); die "Download failed: $response->{reason}" unless $response->{success};'
-                            else
-                                echo "No downloader tool found (curl, wget, python, perl). Failing."
-                                exit 1
-                            fi
-                            
-                            echo "Extracting docker CLI..."
-                            tar -xzf /tmp/docker.tgz -C /tmp
-                            mv /tmp/docker/docker "${WORKSPACE}/bin/docker"
-                            chmod +x "${WORKSPACE}/bin/docker"
-                            rm -rf /tmp/docker.tgz /tmp/docker
-                        fi
-                    fi
-                    docker --version
-                '''
+                echo '🛠️ Configuring permissions for local Docker CLI...'
+                sh 'chmod +x bin/docker'
+                sh 'docker --version'
             }
         }
 
