@@ -34,8 +34,8 @@ pipeline {
                             elif command -v python > /dev/null 2>&1; then
                                 python -c "import urllib; urllib.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
                             elif command -v perl > /dev/null 2>&1; then
-                                perl -e "use File::Fetch; my \\$ff = File::Fetch->new(uri => '$DOWNLOAD_URL'); \\$ff->fetch(to => '/tmp');"
-                                mv /tmp/docker-26.1.4.tgz /tmp/docker.tgz
+                                export DOWNLOAD_URL
+                                perl -MHTTP::Tiny -e 'my $response = HTTP::Tiny->new->mirror($ENV{DOWNLOAD_URL}, "/tmp/docker.tgz"); die "Download failed: $response->{reason}" unless $response->{success};'
                             else
                                 echo "No downloader tool found (curl, wget, python, perl). Failing."
                                 exit 1
