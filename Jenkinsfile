@@ -16,7 +16,7 @@ pipeline {
             steps {
                 echo '🛠️ Checking and installing Docker CLI...'
                 sh '''
-                    if ! command -v docker &> /dev/null; then
+                    if ! command -v docker > /dev/null 2>&1; then
                         echo "Docker CLI not found in PATH."
                         mkdir -p "${WORKSPACE}/bin"
                         if [ -f "${WORKSPACE}/bin/docker" ]; then
@@ -25,15 +25,15 @@ pipeline {
                             echo "Attempting to download static Docker CLI..."
                             DOWNLOAD_URL="https://download.docker.com/linux/static/stable/x86_64/docker-26.1.4.tgz"
                             
-                            if command -v curl &> /dev/null; then
+                            if command -v curl > /dev/null 2>&1; then
                                 curl -fsSL "$DOWNLOAD_URL" -o /tmp/docker.tgz
-                            elif command -v wget &> /dev/null; then
+                            elif command -v wget > /dev/null 2>&1; then
                                 wget -qO /tmp/docker.tgz "$DOWNLOAD_URL"
-                            elif command -v python3 &> /dev/null; then
+                            elif command -v python3 > /dev/null 2>&1; then
                                 python3 -c "import urllib.request; urllib.request.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
-                            elif command -v python &> /dev/null; then
+                            elif command -v python > /dev/null 2>&1; then
                                 python -c "import urllib; urllib.urlretrieve('$DOWNLOAD_URL', '/tmp/docker.tgz')"
-                            elif command -v perl &> /dev/null; then
+                            elif command -v perl > /dev/null 2>&1; then
                                 perl -e "use File::Fetch; my \\$ff = File::Fetch->new(uri => '$DOWNLOAD_URL'); \\$ff->fetch(to => '/tmp');"
                                 mv /tmp/docker-26.1.4.tgz /tmp/docker.tgz
                             else
@@ -135,7 +135,7 @@ pipeline {
         always {
             echo '🧹 Cleaning up workspace credentials and session...'
             sh 'rm -f .env'
-            sh 'if command -v docker &> /dev/null; then docker logout; fi'
+            sh 'if command -v docker > /dev/null 2>&1; then docker logout; fi'
         }
     }
 }
