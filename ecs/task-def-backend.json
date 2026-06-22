@@ -1,0 +1,109 @@
+{
+  "family": "shopease-backend",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "shopease-backend",
+      "image": "${BACKEND_IMAGE}:${BUILD_TAG}",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "containerPort": 5000,
+          "hostPort": 5000,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "5000"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "172.31.47.145"
+        },
+        {
+          "name": "DB_USER",
+          "value": "root"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "${DB_PASSWORD}"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "ecommerce_db"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "3306"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "${JWT_SECRET}"
+        },
+        {
+          "name": "SMTP_HOST",
+          "value": "smtp.gmail.com"
+        },
+        {
+          "name": "SMTP_PORT",
+          "value": "587"
+        },
+        {
+          "name": "SMTP_USER",
+          "value": "${SMTP_USER}"
+        },
+        {
+          "name": "SMTP_PASS",
+          "value": "${SMTP_PASS}"
+        },
+        {
+          "name": "SMTP_FROM",
+          "value": "ShopEase <${SMTP_USER}>"
+        },
+        {
+          "name": "TWILIO_ACCOUNT_SID",
+          "value": "${TWILIO_ACCOUNT_SID}"
+        },
+        {
+          "name": "TWILIO_AUTH_TOKEN",
+          "value": "${TWILIO_AUTH_TOKEN}"
+        },
+        {
+          "name": "TWILIO_PHONE_NUMBER",
+          "value": "${TWILIO_PHONE_NUMBER}"
+        },
+        {
+          "name": "GOOGLE_CLIENT_ID",
+          "value": "${GOOGLE_CLIENT_ID}"
+        },
+        {
+          "name": "GEMINI_API_KEY",
+          "value": "${GEMINI_API_KEY}"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "${FRONTEND_URL}"
+        }
+      ],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/shopease",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "backend"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::470855105302:role/ecsTaskExecutionRole"
+}
